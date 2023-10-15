@@ -7,6 +7,7 @@
 #include <locale>
 #include <codecvt>
 #include <stdio.h>
+#include <cstdlib>
 
 const std::map<char, const char32_t*> mappings = {
     {'a', U"αäаαаａ𝐚𝑎𝒂𝒶āăâⓐ"},
@@ -140,17 +141,28 @@ void dumpUnicodeData() {
     }
 }
 
-int wmain() {
-
-    dumpUnicodeData();
-
-    const char32_t* wszString = U"Hello, World!";
-    char32_t wszResult[40]{};
+void PseudoLocString(const char32_t* wszString, char32_t* wszResult) {
 
     auto length = std::char_traits<char32_t>::length(wszString);
     for (int i = 0; i < length; i++) {
         char32_t c = wszString[i];
         auto item = mappings.find((char)c);
-        wszResult[i] = (item != mappings.end()) ? item->second[0] : c;
+        auto idx = std::rand() % std::char_traits<char32_t>::length(item->second);
+        auto ch = item->second[idx];
+        wszResult[i] = (item != mappings.end()) ? ch : c;
     }
+}
+
+int wmain() {
+
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    // this displays all the unicode mapping details, 
+    // this is so you can see what a letter might map onto
+    //dumpUnicodeData();
+
+    const char32_t* wszString = U"Hello, World!";
+    char32_t wszResult[40]{};
+
+    PseudoLocString(wszString, wszResult);
 }
