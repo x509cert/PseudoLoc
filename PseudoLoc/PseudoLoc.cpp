@@ -4,8 +4,11 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <locale>
+#include <codecvt>
+#include <stdio.h>
 
-std::map<char, const char32_t*> mappings = {
+const std::map<char, const char32_t*> mappings = {
     {'a', U"αäаαаａ𝐚𝑎𝒂𝒶āăâⓐ"},
     {'b', U"βбƀЬьƅ𝐛𝑏𝒃𝒷ⓑ"},
     {'c', U"ςçссϲς𝐜𝑐𝒄𝒸ⓒ⊂ⓒ"},
@@ -32,6 +35,7 @@ std::map<char, const char32_t*> mappings = {
     {'x', U"χх𝕩х𝐱𝑥𝒙𝓍𝔁𝔵ⓧ"},
     {'y', U"ψýуу𝐲𝑦𝒚𝓎𝔂𝔶𐐐γ"},
     {'z', U"ζž𝓏ᴢ𝐳𝑧𝒛𝓏𝔃𝔷ⓩ"},
+  
     {'A', U"ΑÄАΑАᎪＡ𝐀𝑨𝒜Ⓐ∀"},
     {'B', U"ΒƁБΒВᏴＢ𝐁𝑩"},
     {'C', U"𝓒ÇСϹСⅭＣ𝐂𝑪𝒞UⒸ"},
@@ -40,7 +44,7 @@ std::map<char, const char32_t*> mappings = {
     {'F', U"𝕱Ƒ𝐹ϜϻⅬＦ𝐅𝑭"},
     {'G', U"𝓖Ğ𝙶ԌǤⅫＧ𝐆𝑮𝒢"},
     {'H', U"ΗĦНΗНᎻＨ𝐇𝑯ℍ"},
-    {'I', U"ΙÏ𝕀ΙІⅠＩ𝐈𝑰𝐈Ⅰ𐌆"},
+    {'I', U"ΙÏ𝕀ΙⅠＩ𝐈𝑰𝐈Ⅰ𐌆"},
     {'J', U"ϳĴ𝘑ϳЈＪ𝐉𝑱𝒥𝐽"},
     {'K', U"ΚĶКΚКᏦＫ𝐊𝑲𝒦"},
     {'L', U"𝐿Ļ𝗟ⅬⅬᏞＬ𝐋𝑳𝒧ԼՆ⌊⌋┃"},
@@ -48,7 +52,7 @@ std::map<char, const char32_t*> mappings = {
     {'N', U"ΝŃ𝕹ΝＮᏁＮ𝐍𝑵𝒩Ⲡ𐌿ℕᚢ∏"},
     {'O', U"ΟÖОΟОᎾＯ𝐎𝑶𝒪口Ꭴᱛ"},
     {'P', U"ΡƤ𝖯ΡРᏢＰ𝐏𝑷𝒫ℙ"},
-    {'Q', U"Q̄Q̃ԚԚＱႳＱ𝐐𝑸𝒬"},
+    {'Q', U"Q̄Q̃ԚＱႳＱ𝐐𝑸𝒬"},
     {'R', U"𝕽Ř𝘙ᎡᎡＲＲ𝐑𝑹"},
     {'S', U"𝗦Š𝓢ЅᏕＳ𝐒𝑺𝒮𝐒ⵢ⎰"},
     {'T', U"ΤŢТΤТᎢＴ𝐓𝑻𝒯"},
@@ -58,6 +62,7 @@ std::map<char, const char32_t*> mappings = {
     {'X', U"ΧХ𝔛ΧХⅩＸ𝐗𝑿𝒳𝐗ⵝ☓☠"},
     {'Y', U"ΨÝҮҮＹᎩＹ𝐘𝒀𝒴"},
     {'Z', U"ΖŽℤΖＺᏃＺ𝐙𝒁𝒵ℤ☡"},
+ 
     {'0', U"０𝟘⓪𝟎𝟘𝟢𝟬𝟶０〇०"},
     {'1', U"１𝟙①𝟏𝟙𝟣𝟭𝟷１١"},
     {'2', U"２𝟚②𝟐𝟚𝟤𝟮𝟸２২೭²"},
@@ -68,6 +73,7 @@ std::map<char, const char32_t*> mappings = {
     {'7', U"７𝟟⑦𝟕𝟟𝟩𝟳𝟽７"},
     {'8', U"８𝟠⑧𝟖𝟠𝟪𝟴𝟾８"},
     {'9', U"９𝟡⑨𝟗𝟡𝟫𝟵𝟿９"},
+
     {',', U"‚٫٬ꓹ‚"},
     {'?', U"‽⁇⁈⁉"},
     {'!', U"‼⁈⁉"},
@@ -110,11 +116,11 @@ std::map<std::string, std::string> readData(const std::string& filename) {
 
 std::string toUppercaseHexString(char32_t character) {
     std::stringstream ss;
-    ss << std::setw(4)        // Ensure at least 8 characters are printed
+    ss << std::setw(4)         // Ensure at least 4 characters are printed
         << std::setfill('0')   // Fill with leading zeros if needed
         << std::uppercase      // Use uppercase letters
         << std::hex            // Output in hexadecimal format
-        << static_cast<uint32_t>(character);  // Convert char32_t to uint32_t
+        << static_cast<uint32_t>(character);  
     return ss.str();
 }
 
